@@ -23,13 +23,25 @@
   var tiles = null;
   function setTiles() {
     var style = isDark() ? "dark_all" : "light_all";
-    if (tiles && tiles._style === style) return;
+    if (tiles && (tiles._style === style || tiles._style === "osm")) return;
     if (tiles) map.removeLayer(tiles);
     tiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/" + style + "/{z}/{x}/{y}{r}.png", {
       subdomains: "abcd", maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
     });
     tiles._style = style;
+    var errs = 0;
+    tiles.on("tileerror", function () {
+      errs++;
+      if (errs === 6 && tiles._style !== "osm") {   /* CARTO 타일이 막히면 OpenStreetMap 기본 지도로 전환 */
+        map.removeLayer(tiles);
+        tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+        });
+        tiles._style = "osm";
+        tiles.addTo(map);
+      }
+    });
     tiles.addTo(map);
   }
   setTiles();

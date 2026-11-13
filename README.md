@@ -12,7 +12,8 @@ seminary.html   성서침례교회신학교 (신학교 소개, koreabbc.kr 연�
 404.html        없는 주소로 접속했을 때 보여줄 페이지
 assets/css/style.css
 assets/js/main.js
-assets/js/church-map.js   연락하기 지도 (Leaflet)
+assets/js/church-map.js   연락하기 지도
+assets/vendor/leaflet/    지도 라이브러리 Leaflet 1.9.4 (BSD-2, 외부 CDN 없이 동작)
 assets/img/     사진·아이콘 (메타데이터 제거·용량 최적화 완료)
 .nojekyll       GitHub Pages가 파일을 그대로 서비스하도록 하는 설정 파일
 ```
