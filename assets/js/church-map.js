@@ -1,4 +1,4 @@
-/* 연락하기 · 교회 지도 (Leaflet + OpenStreetMap/CARTO 타일) */
+/* 연락하기 · 교회 지도 (Leaflet + OpenStreetMap 타일, API 키 불필요) */
 (function () {
   "use strict";
   var el = document.getElementById("church-map");
@@ -20,27 +20,30 @@
     if (t) return t === "dark";
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   }
-  var tiles = null;
+  /* 지도 타일 (API 키 불필요)
+     1순위: OpenStreetMap — 한글 지명 표시. 다크 모드에서는 CSS로 어둡게 처리
+     2순위: Esri — OSM 타일이 막힐 때 자동 전환 (예: 파일을 직접 열어 Referer가 없는 경우) */
+  var OSM_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+  var ESRI_ATTR = 'Tiles &copy; Esri';
+  var tiles = null, provider = "osm";
+  function makeLayer() {
+    if (provider === "osm") {
+      return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: OSM_ATTR });
+    }
+    var svc = isDark() ? "Canvas/World_Dark_Gray_Base" : "World_Street_Map";
+    return L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/" + svc + "/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, attribution: ESRI_ATTR });
+  }
   function setTiles() {
-    var style = isDark() ? "dark_all" : "light_all";
-    if (tiles && (tiles._style === style || tiles._style === "osm")) return;
+    el.classList.toggle("map-dark", isDark() && provider === "osm");
+    var key = provider + (provider === "esri" && isDark() ? "-dark" : "");
+    if (tiles && tiles._key === key) return;
     if (tiles) map.removeLayer(tiles);
-    tiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/" + style + "/{z}/{x}/{y}{r}.png", {
-      subdomains: "abcd", maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
-    });
-    tiles._style = style;
+    tiles = makeLayer();
+    tiles._key = key;
     var errs = 0;
     tiles.on("tileerror", function () {
-      errs++;
-      if (errs === 6 && tiles._style !== "osm") {   /* CARTO 타일이 막히면 OpenStreetMap 기본 지도로 전환 */
-        map.removeLayer(tiles);
-        tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
-        });
-        tiles._style = "osm";
-        tiles.addTo(map);
-      }
+      if (provider !== "osm") return;
+      if (++errs === 4) { provider = "esri"; setTiles(); }
     });
     tiles.addTo(map);
   }

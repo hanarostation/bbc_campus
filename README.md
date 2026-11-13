@@ -54,6 +54,6 @@ GitHub 저장소 → **Settings → Pages** → Source: `Deploy from a branch`, 
 
 - **BBC Campus 링크**: 캠퍼스 사이트가 준비되면 `campus.html`의 `Coming soon` 표시와 하단 버튼을 실제 주소로 바꾸면 됩니다.
 - **교회 목록·지도**: `contact.html`의 `<article class="ccard">` 블록과, 같은 파일 아래쪽 `<script id="church-data">`의 좌표 데이터(lat/lng)를 함께 수정합니다.
-  - 지도: Leaflet + OpenStreetMap/CARTO 지도 타일(무료, API 키 불필요). 좌표는 OpenStreetMap 주소 검색으로 구했으며 24곳은 읍·면·구 단위의 대략적 위치입니다(`"approx": true`).
+  - 지도: Leaflet + OpenStreetMap 지도 타일(무료, API 키 불필요, 한글 지명). OSM 타일이 막히는 환경에서는 Esri 지도로 자동 전환. 좌표는 OpenStreetMap 주소 검색으로 구했으며 24곳은 읍·면·구 단위의 대략적 위치입니다(`"approx": true`).
   - "내 위치에서 가까운 교회"는 브라우저 위치 권한을 사용하며, HTTPS 주소(GitHub Pages의 Enforce HTTPS)에서만 동작합니다.
   출처: 한국성서침례교회 목회자 친교회 회원교회 안내 (koreabbf.org/sub/0107.php)
