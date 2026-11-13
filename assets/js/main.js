@@ -62,10 +62,10 @@
   if (finder) {
     var chips = finder.querySelectorAll(".chip");
     var q = finder.querySelector("#church-search");
-    var regions = finder.querySelectorAll(".region");
+    var regions = finder.querySelectorAll(".region:not(#near-list)");
     var empty = finder.querySelector(".empty");
     var active = "all";
-    function apply() {
+    function apply(fit) {
       var term = (q.value || "").trim().toLowerCase();
       var shown = 0;
       regions.forEach(function (sec) {
@@ -78,15 +78,17 @@
         sec.hidden = n === 0; shown += n;
       });
       if (empty) empty.style.display = shown ? "none" : "block";
+      document.dispatchEvent(new CustomEvent("churches:filtered", { detail: { fit: fit } }));
     }
     chips.forEach(function (ch) {
       ch.addEventListener("click", function () {
         active = ch.dataset.filter;
         chips.forEach(function (c) { c.setAttribute("aria-pressed", c === ch ? "true" : "false"); });
-        apply();
+        apply(true);
       });
     });
-    q.addEventListener("input", apply);
+    var t;
+    q.addEventListener("input", function () { clearTimeout(t); t = setTimeout(function () { apply(!!q.value.trim()); }, 250); });
   }
 
   /* ----- 신앙 선언: 모두 펼치기/접기 ----- */

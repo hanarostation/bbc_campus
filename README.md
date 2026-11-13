@@ -6,11 +6,13 @@
 
 ```
 index.html      Save 119 (기존 save119.com 복음 콘텐츠)
-contact.html    연락하기 (전국·해외 성서침례교회 87곳, 지역 필터·검색)
+contact.html    연락하기 (교회 지도 + 내 위치 기반 가까운 교회, 87곳 목록·지역 필터·검색)
 campus.html     BBC Campus (성경적 가치 교육 홍보)
+seminary.html   성서침례교회신학교 (신학교 소개, koreabbc.kr 연결)
 404.html        없는 주소로 접속했을 때 보여줄 페이지
 assets/css/style.css
 assets/js/main.js
+assets/js/church-map.js   연락하기 지도 (Leaflet)
 assets/img/     사진·아이콘 (메타데이터 제거·용량 최적화 완료)
 .nojekyll       GitHub Pages가 파일을 그대로 서비스하도록 하는 설정 파일
 ```
@@ -50,5 +52,7 @@ GitHub 저장소 → **Settings → Pages** → Source: `Deploy from a branch`, 
 ## 수정 안내
 
 - **BBC Campus 링크**: 캠퍼스 사이트가 준비되면 `campus.html`의 `Coming soon` 표시와 하단 버튼을 실제 주소로 바꾸면 됩니다.
-- **교회 목록**: `contact.html`의 `<article class="ccard">` 블록을 추가/수정합니다.
+- **교회 목록·지도**: `contact.html`의 `<article class="ccard">` 블록과, 같은 파일 아래쪽 `<script id="church-data">`의 좌표 데이터(lat/lng)를 함께 수정합니다.
+  - 지도: Leaflet + OpenStreetMap/CARTO 지도 타일(무료, API 키 불필요). 좌표는 OpenStreetMap 주소 검색으로 구했으며 24곳은 읍·면·구 단위의 대략적 위치입니다(`"approx": true`).
+  - "내 위치에서 가까운 교회"는 브라우저 위치 권한을 사용하며, HTTPS 주소(GitHub Pages의 Enforce HTTPS)에서만 동작합니다.
   출처: 한국성서침례교회 목회자 친교회 회원교회 안내 (koreabbf.org/sub/0107.php)
